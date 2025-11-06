@@ -382,6 +382,7 @@ export function driver(options: Config = {}): Driver {
       element.setAttribute("aria-expanded", "true");
       element.setAttribute("aria-controls", "driver-popover-content");
     });
+    setState("isPaused", false);
   };
 
   const api: Driver = {
