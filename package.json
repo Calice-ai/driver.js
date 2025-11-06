@@ -2,15 +2,15 @@
   "name": "@maltenzo/driver.js",
   "license": "MIT",
   "private": false,
-  "version": "1.3.9",
+  "version": "1.3.10",
   "main": "./dist/driver.js.cjs",
   "module": "./dist/driver.js.mjs",
   "types": "./dist/driver.js.d.ts",
-  "homepage": "https://github.com/maltenzo/driver.js#readme",
-  "repository": "https://github.com/maltenzo/driver.js",
+  "homepage": "https://github.com/calice/driver.js#readme",
+  "repository": "https://github.com/calice/driver.js",
   "author": "Maltenzo <evigneti@gmail.com>",
   "bugs": {
-    "url": "https://github.com/maltenzo/driver.js/issues"
+    "url": "https://github.com/calice/driver.js/issues"
   },
   "exports": {
     ".": {

@@ -173,6 +173,14 @@ function transferHighlight(toElement: Element, toStep: DriveStep) {
 
 export function destroyHighlight() {
   document.getElementById("driver-dummy-element")?.remove();
+
+  document.querySelectorAll(".driver-active-element-paused").forEach(element => {
+    element.classList.remove("driver-active-element-paused", "driver-no-interaction");
+    element.removeAttribute("aria-haspopup");
+    element.removeAttribute("aria-expanded");
+    element.removeAttribute("aria-controls");
+  });
+  
   document.querySelectorAll(".driver-active-element").forEach(element => {
     element.classList.remove("driver-active-element", "driver-no-interaction");
     element.removeAttribute("aria-haspopup");

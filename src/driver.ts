@@ -291,10 +291,6 @@ export function driver(options: Config = {}): Driver {
   }
 
   function destroy(withOnDestroyStartedHook = true) {
-    const isPaused = getState("isPaused");
-    if (isPaused) {
-      return;
-    }
     const activeElement = getState("__activeElement");
     const activeStep = getState("__activeStep");
 
@@ -317,7 +313,7 @@ export function driver(options: Config = {}): Driver {
     const onDeselected = activeStep?.onDeselected || getConfig("onDeselected");
     const onDestroyed = getConfig("onDestroyed");
 
-    document.body.classList.remove("driver-active", "driver-fade", "driver-simple");
+    document.body.classList.remove("driver-active", "driver-fade", "driver-simple", "driver-paused");
 
     destroyEvents();
     destroyPopover();
