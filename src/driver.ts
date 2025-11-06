@@ -357,6 +357,13 @@ export function driver(options: Config = {}): Driver {
     if (popover) {
       (popover as HTMLElement).style.display = "none";
     }
+    document.querySelectorAll(".driver-active-element").forEach(element => {
+      element.classList.remove("driver-active-element");
+      element.removeAttribute("aria-haspopup");
+      element.removeAttribute("aria-expanded");
+      element.removeAttribute("aria-controls");
+      element.classList.add("driver-active-element-paused");
+    });
     setState("isPaused", true);
   };
 
@@ -368,13 +375,17 @@ export function driver(options: Config = {}): Driver {
     }
 
     document.body.classList.remove("driver-paused");
-    const currentStep = getState("activeIndex") ?? 0;
     const popover = document.getElementsByClassName("driver-popover")[0];
     if (popover) {
       (popover as HTMLElement).style.display = "block";
     }
-    drive(currentStep + 1);
-    setState("isPaused", false);
+    document.querySelectorAll(".driver-active-element-paused").forEach(element => {
+      element.classList.remove("driver-active-element-paused");
+      element.classList.add("driver-active-element");
+      element.setAttribute("aria-haspopup", "dialog");
+      element.setAttribute("aria-expanded", "true");
+      element.setAttribute("aria-controls", "driver-popover-content");
+    });
   };
 
   const api: Driver = {
