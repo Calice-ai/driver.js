@@ -38,20 +38,31 @@ export interface Driver {
   hasPreviousStep: () => boolean;
   highlight: (step: DriveStep) => void;
   destroy: () => void;
+  pause: () => void;
+  resume: () => void;
+  isPaused: () => boolean;
 }
 
 export function driver(options: Config = {}): Driver {
   configure(options);
 
   function handleClose() {
-    if (!getConfig("allowClose")) {
+    const isPaused = getState("isPaused");
+
+    if (!getConfig("allowClose") || isPaused) {
       return;
     }
+
 
     destroy();
   }
 
   function handleOverlayClick() {
+    const isPaused = getState("isPaused");
+    if (isPaused) {
+      return;
+    }
+
     const overlayClickBehavior = getConfig("overlayClickBehavior");
 
     if (getConfig("allowClose") && overlayClickBehavior === "close") {
@@ -64,7 +75,14 @@ export function driver(options: Config = {}): Driver {
     }
   }
 
+  
+
   function moveNext() {
+    const isPaused = getState("isPaused");
+    if (isPaused) {
+      return;
+    }
+
     const activeIndex = getState("activeIndex");
     const steps = getConfig("steps") || [];
     if (typeof activeIndex === "undefined") {
@@ -80,6 +98,11 @@ export function driver(options: Config = {}): Driver {
   }
 
   function movePrevious() {
+    const isPaused = getState("isPaused");
+    if (isPaused) {
+      return;
+    }
+
     const activeIndex = getState("activeIndex");
     const steps = getConfig("steps") || [];
     if (typeof activeIndex === "undefined") {
@@ -95,6 +118,11 @@ export function driver(options: Config = {}): Driver {
   }
 
   function moveTo(index: number) {
+    const isPaused = getState("isPaused");
+    if (isPaused) {
+      return;
+    }
+
     const steps = getConfig("steps") || [];
 
     if (steps[index]) {
@@ -105,6 +133,11 @@ export function driver(options: Config = {}): Driver {
   }
 
   function handleArrowLeft() {
+    const isPaused = getState("isPaused");
+    if (isPaused) {
+      return;
+    }
+
     const isTransitioning = getState("__transitionCallback");
     if (isTransitioning) {
       return;
@@ -135,6 +168,11 @@ export function driver(options: Config = {}): Driver {
   }
 
   function handleArrowRight() {
+    const isPaused = getState("isPaused");
+    if (isPaused) {
+      return;
+    }
+
     const isTransitioning = getState("__transitionCallback");
     if (isTransitioning) {
       return;
@@ -253,6 +291,10 @@ export function driver(options: Config = {}): Driver {
   }
 
   function destroy(withOnDestroyStartedHook = true) {
+    const isPaused = getState("isPaused");
+    if (isPaused) {
+      return;
+    }
     const activeElement = getState("__activeElement");
     const activeStep = getState("__activeStep");
 
@@ -309,6 +351,32 @@ export function driver(options: Config = {}): Driver {
     }
   }
 
+  function pause() {
+    document.body.classList.add("driver-paused");
+    const popover = document.getElementsByClassName("driver-popover")[0];
+    if (popover) {
+      (popover as HTMLElement).style.display = "none";
+    }
+    setState("isPaused", true);
+  };
+
+  const resume = () => {
+    const isActive = getState("isInitialized");
+    const isPaused = getState("isPaused");
+    if (!isActive || !isPaused) {
+      return;
+    }
+
+    document.body.classList.remove("driver-paused");
+    const currentStep = getState("activeIndex") ?? 0;
+    const popover = document.getElementsByClassName("driver-popover")[0];
+    if (popover) {
+      (popover as HTMLElement).style.display = "block";
+    }
+    drive(currentStep + 1);
+    setState("isPaused", false);
+  };
+
   const api: Driver = {
     isActive: () => getState("isInitialized") || false,
     refresh: requireRefresh,
@@ -326,6 +394,9 @@ export function driver(options: Config = {}): Driver {
     },
     getConfig,
     getState,
+    pause,
+    resume,
+    isPaused: () => getState("isPaused") || false,
     getActiveIndex: () => getState("activeIndex"),
     isFirstStep: () => getState("activeIndex") === 0,
     isLastStep: () => {

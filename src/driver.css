@@ -6,6 +6,19 @@
   pointer-events: none;
 }
 
+.driver-paused .driver-overlay {
+  pointer-events: auto;
+  display: none;
+}
+
+.driver-paused * {
+  pointer-events: auto;
+}
+
+.driver-paused  .driver-popover {
+  display: none;
+}
+
 .driver-active .driver-active-element,
 .driver-active .driver-active-element *,
 .driver-popover,

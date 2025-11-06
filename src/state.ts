@@ -4,7 +4,7 @@ import { DriveStep } from "./driver";
 
 export type State = {
   isInitialized?: boolean;
-
+  isPaused?: boolean;
   activeIndex?: number;
   activeElement?: Element;
   activeStep?: DriveStep;
@@ -41,5 +41,8 @@ export function getState<K extends keyof State>(key?: K) {
 }
 
 export function resetState() {
+  console.log("------------BEGIN RESET STATE-----------------")
+  console.log("currentState", currentState);
+  console.log("------------END RESET STATE-----------------")
   currentState = {};
 }
