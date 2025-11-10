@@ -158,6 +158,10 @@
   pointer-events: none !important;
 }
 
+.driver-no-interaction, .driver-active-element-paused {
+  pointer-events: auto !important;
+}
+
 .driver-popover-footer button:hover,
 .driver-popover-footer button:focus {
   background-color: #f7f7f7;
